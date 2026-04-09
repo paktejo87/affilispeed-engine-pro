@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth, UserRole } from "@/lib/auth-context";
 import {
   Zap,
   Mail,
@@ -14,6 +15,9 @@ import {
   Sparkles,
   TrendingUp,
   Globe,
+  Crown,
+  Users,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function LoginPage() {
@@ -21,11 +25,14 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<UserRole>("user");
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    login(selectedRole);
     setTimeout(() => {
       router.push("/dashboard");
     }, 1500);
@@ -40,15 +47,12 @@ export default function LoginPage() {
           <div className="absolute top-20 left-20 w-[400px] h-[400px] bg-brand-500/10 rounded-full blur-[100px] animate-float" />
           <div className="absolute bottom-20 right-20 w-[300px] h-[300px] bg-accent-500/10 rounded-full blur-[80px] animate-float" style={{ animationDelay: "3s" }} />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-600/5 rounded-full blur-[120px]" />
-
-          {/* Grid Pattern */}
           <div className="absolute inset-0 opacity-[0.03]" style={{
             backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
             backgroundSize: "60px 60px"
           }} />
         </div>
 
-        {/* Content */}
         <div className="relative z-10 flex flex-col justify-center px-16 py-12">
           <div className="flex items-center gap-3 mb-12">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center">
@@ -71,18 +75,13 @@ export default function LoginPage() {
             Platform affiliate paling mematikan di Indonesia. Landing page instan di jaringan 2G, cloaking siluman, dan konversi tertinggi untuk META Ads.
           </p>
 
-          {/* Feature Cards */}
           <div className="space-y-3">
             {[
               { icon: TrendingUp, title: "Konversi 8.7%", desc: "Rata-rata CTR pengguna kami", color: "text-green-400" },
               { icon: Shield, title: "15.832 Bot Diblokir", desc: "Perlindungan cloaking aktif", color: "text-brand-400" },
               { icon: Globe, title: "< 1.5 detik LCP", desc: "Kecepatan muat bahkan di 2G", color: "text-blue-400" },
             ].map((feature, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm hover:bg-white/[0.05] transition-all duration-300"
-                style={{ animationDelay: `${i * 150}ms` }}
-              >
+              <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm hover:bg-white/[0.05] transition-all duration-300">
                 <div className={`w-10 h-10 rounded-xl bg-white/[0.05] flex items-center justify-center ${feature.color}`}>
                   <feature.icon className="w-5 h-5" />
                 </div>
@@ -98,7 +97,6 @@ export default function LoginPage() {
 
       {/* Right: Login Form */}
       <div className="flex-1 flex items-center justify-center p-8 relative">
-        {/* Background glow */}
         <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-brand-500/5 rounded-full blur-[100px]" />
 
         <div className="w-full max-w-[420px] relative z-10">
@@ -122,6 +120,58 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {/* Role Selector */}
+          <div className="mb-6">
+            <label className="text-[12px] font-semibold text-slate-300 mb-2 block">
+              Masuk Sebagai
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setSelectedRole("admin")}
+                className={`p-4 rounded-xl border transition-all duration-300 text-left group ${
+                  selectedRole === "admin"
+                    ? "bg-red-500/10 border-red-500/40 ring-1 ring-red-500/20"
+                    : "bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]"
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    selectedRole === "admin" ? "bg-red-500/20" : "bg-white/[0.04]"
+                  }`}>
+                    <ShieldCheck className={`w-4 h-4 ${selectedRole === "admin" ? "text-red-400" : "text-slate-500"}`} />
+                  </div>
+                  <span className={`text-[13px] font-bold ${selectedRole === "admin" ? "text-red-400" : "text-slate-400"}`}>
+                    Admin
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-500">Akses penuh, kelola user & sistem</p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedRole("user")}
+                className={`p-4 rounded-xl border transition-all duration-300 text-left group ${
+                  selectedRole === "user"
+                    ? "bg-brand-500/10 border-brand-500/40 ring-1 ring-brand-500/20"
+                    : "bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]"
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    selectedRole === "user" ? "bg-brand-500/20" : "bg-white/[0.04]"
+                  }`}>
+                    <Users className={`w-4 h-4 ${selectedRole === "user" ? "text-brand-400" : "text-slate-500"}`} />
+                  </div>
+                  <span className={`text-[13px] font-bold ${selectedRole === "user" ? "text-brand-400" : "text-slate-400"}`}>
+                    User
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-500">Buat LP, kelola domain & cloaking</p>
+              </button>
+            </div>
+          </div>
+
           {/* Social Login */}
           <div className="grid grid-cols-2 gap-3 mb-6">
             <button className="btn-ghost text-[12px] justify-center py-3">
@@ -141,14 +191,12 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {/* Divider */}
           <div className="flex items-center gap-4 mb-6">
             <div className="flex-1 h-px bg-white/[0.06]" />
             <span className="text-[11px] text-slate-500 font-medium">atau masuk dengan email</span>
             <div className="flex-1 h-px bg-white/[0.06]" />
           </div>
 
-          {/* Form */}
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
@@ -160,7 +208,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="nama@email.com"
+                  placeholder={selectedRole === "admin" ? "admin@affilispeed.com" : "nama@email.com"}
                   className="input-field pl-11"
                   required
                 />
@@ -186,27 +234,17 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded bg-navy-800 border-white/10 accent-brand-500"
-                />
+                <input type="checkbox" className="w-4 h-4 rounded bg-navy-800 border-white/10 accent-brand-500" />
                 <span className="text-[12px] text-slate-400">Ingat saya</span>
               </label>
-              <a
-                href="#"
-                className="text-[12px] text-brand-400 hover:text-brand-300 font-medium transition-colors"
-              >
+              <a href="#" className="text-[12px] text-brand-400 hover:text-brand-300 font-medium transition-colors">
                 Lupa kata sandi?
               </a>
             </div>
@@ -214,7 +252,11 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full justify-center py-3.5 text-[14px] relative overflow-hidden group disabled:opacity-70"
+              className={`w-full justify-center py-3.5 text-[14px] relative overflow-hidden group disabled:opacity-70 inline-flex items-center gap-2 font-semibold rounded-xl transition-all ${
+                selectedRole === "admin"
+                  ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/25 hover:shadow-red-500/40"
+                  : "btn-primary"
+              }`}
             >
               {loading ? (
                 <div className="flex items-center gap-2">
@@ -223,24 +265,36 @@ export default function LoginPage() {
                 </div>
               ) : (
                 <>
-                  Masuk ke Dashboard
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  {selectedRole === "admin" ? (
+                    <>
+                      <ShieldCheck className="w-4 h-4" />
+                      Masuk Sebagai Admin
+                    </>
+                  ) : (
+                    <>
+                      Masuk ke Dashboard
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
                 </>
               )}
             </button>
           </form>
 
+          {/* Demo hint */}
+          <div className="mt-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <p className="text-[10px] text-slate-500 text-center">
+              💡 <strong className="text-slate-400">Demo:</strong> Pilih role di atas lalu klik masuk (email & password bebas)
+            </p>
+          </div>
+
           <p className="text-center text-[13px] text-slate-400 mt-6">
             Belum punya akun?{" "}
-            <Link
-              href="/register"
-              className="text-brand-400 font-semibold hover:text-brand-300 transition-colors"
-            >
+            <Link href="/register" className="text-brand-400 font-semibold hover:text-brand-300 transition-colors">
               Daftar Gratis
             </Link>
           </p>
 
-          {/* Trust */}
           <div className="flex items-center justify-center gap-4 mt-8 pt-8 border-t border-white/[0.04]">
             <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
               <Shield className="w-3.5 h-3.5" />
