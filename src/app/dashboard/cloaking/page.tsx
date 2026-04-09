@@ -48,10 +48,10 @@ export default function CloakingPage() {
     { label: "Bot Diblokir", value: "15.832", change: "+234 hari ini", icon: Bot, color: "text-red-400", bg: "bg-red-500/15" },
     { label: "Visitor Asli", value: "284.5K", change: "+12.3% minggu ini", icon: Smartphone, color: "text-green-400", bg: "bg-green-500/15" },
     { label: "Halaman Dilindungi", value: "47", change: "Semua aktif", icon: ShieldCheck, color: "text-brand-400", bg: "bg-brand-500/15" },
-    { label: "Akurasi Filter", value: "99.7%", change: "Grade A+", icon: Target, color: "text-yellow-400", bg: "bg-yellow-500/15" },
+    { label: "Akurasi Filter", value: "99.7%", change: "Grade A+", icon: BarChart3, color: "text-yellow-400", bg: "bg-yellow-500/15" },
   ];
 
-  const Target = BarChart3;
+
 
   return (
     <div className="space-y-6 animate-fade-in">
