@@ -1,19 +1,7 @@
-import type { Metadata } from "next";
-import "./globals.css";
+"use client";
 
-export const metadata: Metadata = {
-  title: "AffiliSpeed Engine Pro — Platform Affiliate Tercepat",
-  description:
-    "Buat landing page dengan kecepatan instan, pertahanan cloaking siluman, dan konversi tinggi untuk affiliate marketer profesional.",
-  keywords: [
-    "affiliate marketing",
-    "landing page builder",
-    "cloaking",
-    "meta ads",
-    "shopee affiliate",
-    "tiktok affiliate",
-  ],
-};
+import "./globals.css";
+import { AuthProvider } from "@/lib/auth-context";
 
 export default function RootLayout({
   children,
@@ -23,6 +11,8 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
+        <title>AffiliSpeed Engine Pro — Platform Affiliate Tercepat</title>
+        <meta name="description" content="Buat landing page dengan kecepatan instan, pertahanan cloaking siluman, dan konversi tinggi untuk affiliate marketer profesional." />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -30,7 +20,9 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="mesh-bg">{children}</body>
+      <body className="mesh-bg">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
